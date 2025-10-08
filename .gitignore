@@ -1,0 +1,22 @@
+# Build artifacts
+dist/
+build/
+*.zip
+
+# Development files (keep out of releases)
+CLAUDE.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*

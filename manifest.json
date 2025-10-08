@@ -1,7 +1,13 @@
 {
 	"name": "POE Trade Pack Kroximatuz",
-    "manifest_version": 3,
-    "version": "1.0.0",
+	"description": "All-in-one extension to improve the PoE 1&2 trade experience with one-click mod filtering",
+	"version": "1.0.0",
+	"manifest_version": 3,
+	"icons": {
+		"16": "Logo16x16.png",
+		"48": "Logo48x48.png",
+		"128": "Logo128x128.png"
+	},
 	"permissions": ["scripting", "tabs"],
 	"host_permissions": ["https://www.pathofexile.com/trade2*", "https://www.pathofexile.com/trade*"],
 	"background": {
@@ -12,5 +18,8 @@
 			"matches": ["https://www.pathofexile.com/trade2", "https://www.pathofexile.com/trade2/*", "https://www.pathofexile.com/trade", "https://www.pathofexile.com/trade/*"],
 			"js": ["cs.js"]
 		}
-	]
+	],
+	"developer": {
+		"name": "Trompetin17 & KroximatuZ"
+	}
 }

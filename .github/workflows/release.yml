@@ -1,0 +1,88 @@
+name: Build and Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: get_version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=manual-build-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate manifest.json
+        run: |
+          if ! jq empty manifest.json 2>/dev/null; then
+            echo "Error: manifest.json is not valid JSON"
+            exit 1
+          fi
+          echo "manifest.json is valid"
+
+      - name: Create build directory
+        run: mkdir -p build
+
+      - name: Copy extension files
+        run: |
+          # Copy only the necessary files for the extension
+          cp manifest.json build/
+          cp cs.js build/
+          cp bg.js build/
+          cp Logo16x16.png build/
+          cp Logo48x48.png build/
+          cp Logo128x128.png build/
+
+      - name: Create ZIP package
+        run: |
+          cd build
+          zip -r ../poe-trade-pack-${{ steps.get_version.outputs.VERSION }}.zip .
+          cd ..
+
+      - name: Verify ZIP contents
+        run: |
+          echo "Contents of the ZIP file:"
+          unzip -l poe-trade-pack-${{ steps.get_version.outputs.VERSION }}.zip
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: poe-trade-pack-${{ steps.get_version.outputs.VERSION }}.zip
+          body: |
+            ## POE Trade Pack Kroximatuz ${{ steps.get_version.outputs.VERSION }}
+
+            ### Features
+            - Add and block modifiers in one click
+            - Auto add "~" at the start of every search
+            - Easy access to most wanted mods (resistances, life, and more)
+
+            ### Installation
+            Download the ZIP file and upload it to OperaGX addon store.
+
+            ### Credits
+            Developed by Trompetin17 & KroximatuZ
+            Huge thanks to Maxime B and Fuzzy for creating the original scripts.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifact (for manual builds)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: poe-trade-pack-${{ steps.get_version.outputs.VERSION }}
+          path: poe-trade-pack-${{ steps.get_version.outputs.VERSION }}.zip
+          retention-days: 30
