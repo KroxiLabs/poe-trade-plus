@@ -47,21 +47,17 @@ jobs:
       - name: Create ZIP package
         run: |
           cd build
-          zip -r ../poe-trade-pack-${{ steps.get_version.outputs.VERSION }}.zip .
+          zip -r ../poe-trade-plus-${{ steps.get_version.outputs.VERSION }}.zip .
           cd ..
-
-      - name: Verify ZIP contents
-        run: |
-          echo "Contents of the ZIP file:"
-          unzip -l poe-trade-pack-${{ steps.get_version.outputs.VERSION }}.zip
+          mv -- "poe-trade-plus-${{ steps.get_version.outputs.VERSION }}.zip" "poe-trade-plus-${{ steps.get_version.outputs.VERSION }}.crx"
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
-          files: poe-trade-pack-${{ steps.get_version.outputs.VERSION }}.zip
+          files: poe-trade-plus-${{ steps.get_version.outputs.VERSION }}.zip
           body: |
-            ## POE Trade Pack Kroximatuz ${{ steps.get_version.outputs.VERSION }}
+            ## POE Trade Plus Kroximatuz ${{ steps.get_version.outputs.VERSION }}
 
             ### Features
             - Add and block modifiers in one click
@@ -83,6 +79,6 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
-          name: poe-trade-pack-${{ steps.get_version.outputs.VERSION }}
-          path: poe-trade-pack-${{ steps.get_version.outputs.VERSION }}.zip
+          name: poe-trade-plus-${{ steps.get_version.outputs.VERSION }}
+          path: poe-trade-plus-${{ steps.get_version.outputs.VERSION }}.crx
           retention-days: 30
