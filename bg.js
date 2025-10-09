@@ -1,4 +1,4 @@
-// This code was originally written by Maxime B and 
+// This code was originally written by Maxime B and Fuzzy
 
 chrome.runtime.onMessage.addListener((msg, sender) => {
     if (msg?.type !== "KROX_START_SCRIPT" || !sender.tab?.id) return;
