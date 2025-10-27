@@ -111,17 +111,17 @@ The extension integrates with the trade site's Vue.js components to add filterin
 
 **Developers**: Trompetin17 & KroximatuZ
 
-**Special Thanks**: Huge thanks to **Maxime B** and **Fuzzy** for creating the original scripts that inspired this extension.
+**Special Thanks**: **Maxime B** and **Fuzzy** for creating the original scripts that inspired this extension.
 
-## License
-
-*(Add your license here)*
 
 ## Support
 
+- Become a [Patreon](https://www.patreon.com/c/kroximatuz/membership) ^_^
+- See me live on [Twitch](https://www.twitch.tv/kroximatuz)
+- Check out my content on [YouTube](https://www.youtube.com/@kroximatuz?sub_confirmation=1)
+
 If you encounter any issues or have suggestions, please:
-- Open an issue on [GitHub](https://github.com/KroxiLabs/poe-trade-plus)
-- Contact us via [your preferred contact method]
+- Open an issue on [GitHub]([https://github.com/KroxiLabs/poe-trade-plus](https://github.com/KroxiLabs/poe-trade-plus/issues))
 
 ## Changelog
 
