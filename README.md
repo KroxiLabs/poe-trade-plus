@@ -121,7 +121,7 @@ The extension integrates with the trade site's Vue.js components to add filterin
 - Check out my content on [YouTube](https://www.youtube.com/@kroximatuz?sub_confirmation=1)
 
 If you encounter any issues or have suggestions, please:
-- Open an issue on [GitHub]([https://github.com/KroxiLabs/poe-trade-plus](https://github.com/KroxiLabs/poe-trade-plus/issues))
+- Open an issue on [Here](https://github.com/KroxiLabs/poe-trade-plus/issues)
 
 ## Changelog
 
