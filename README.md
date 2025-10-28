@@ -123,6 +123,10 @@ The extension integrates with the trade site's Vue.js components to add filterin
 If you encounter any issues or have suggestions, please:
 - Open an issue [here](https://github.com/KroxiLabs/poe-trade-plus/issues)
 
+## Privacy policy
+
+We do not save nor require any data from the end user, if this extension ever uses data from a user will be saved LOCALLY and we won't have any way whatsoever to access it.
+
 ## Changelog
 
 ### v1.0.0 (Initial Release)
