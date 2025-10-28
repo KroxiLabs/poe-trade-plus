@@ -80,6 +80,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: poe-trade-plus-${{ steps.get_version.outputs.VERSION }}
-          path: poe-trade-plus-${{ steps.get_version.outputs.VERSION }}.crx
-          path: poe-trade-plus-${{ steps.get_version.outputs.VERSION }}.zip
+          path: poe-trade-plus-${{ steps.get_version.outputs.VERSION }}*
           retention-days: 30

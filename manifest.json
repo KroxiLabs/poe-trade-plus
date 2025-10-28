@@ -1,7 +1,7 @@
 {
 	"name": "POE Trade plus Kroximatuz",
 	"description": "All-in-one extension to improve the PoE 1&2 trade experience with one-click mod filtering",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"manifest_version": 3,
 	"icons": {
 		"16": "Logo16x16.png",
