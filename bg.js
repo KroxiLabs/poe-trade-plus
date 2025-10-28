@@ -58,7 +58,8 @@ function startKroxScriptMainWorld() {
     .finer-filtered-overlay { z-index:-1; position:absolute; inset:0; background: rgba(0,136,0,.25) }
     .finer-search-global-toggle-collapsed { position:absolute; right:5px; top:5px; width:15px; height:15px; background:#382304; cursor:pointer }
     .upArr::before { content:"\\25BE"; position:absolute; font-size:25px; top:-10px; left:-3px }
-    .dnArr::before { content:"\\25B8"; position:absolute; font-size:25px; top:-10px; left:-3px }
+    .dnArr::before { content:"\\25B8"; position:absolute; font-size:25px; top:-10px; right:-3px }
+    .dnGo::before { content:"ℹ️"; position:absolute; font-size:13px; right:4px; top:3px; cursor:pointer }
     #finer-search-global { color:#fff; width:12em; background:rgba(0,0,0,.75); position:fixed; right:10px; top:50px; z-index:1001; font-size:130%; user-select:none }
     #finer-search-global-title { outline:1px solid #8a5609; background:#5a3806; display:block; text-align:center; text-transform:capitalize; font-size:115%; cursor:move }
     .finer-global-btn { background:#0f304d; outline:1px solid #4c4c7d; margin-top:10px; padding:.3em; display:grid; grid-gap:3px; grid-template-areas:"mod-name mod-minus mod-plus"; grid-template-columns:auto 1em 1em; text-transform:capitalize }
@@ -70,8 +71,60 @@ function startKroxScriptMainWorld() {
     .hidden { display:none !important }
     .finer-search-global-section.mods { position:relative; }
     .finer-search-global-section.misc { position:relative; }
+    .finer-search-global-section.about { position:relative; }
   </style>`);
   document.head.appendChild(styleEl);
+
+  const listModifiers = [];
+  listModifiers.push({
+    name: 'Pseudo Res/Life',
+    types: ['life', 'cold', 'fire', 'light', 'chaos'],
+    prefix: 'pseudo.pseudo_',
+  });
+  listModifiers.push({
+    name: 'Explicit Res/Life',
+    types: ['explicit_life', 'explicit_cold', 'explicit_fire', 'explicit_light', 'explicit_chaos'],
+    prefix: 'explicit.stat_',
+  });
+  listModifiers.push({
+    name: 'Attack Weapon',
+    types: [
+      'explicit_inc_phy_dmg',
+      'explicit_add_phy_local',
+      'explicit_add_fire_local',
+      'explicit_add_cold_local',
+      'explicit_add_light_local',
+      'explicit_add_chaos_local',
+      'explicit_inc_attack_speed_local',
+      'explicit_inc_crit_chance',
+      'explicit_global_crit_mult',
+    ],
+    prefix: 'explicit.stat_',
+  });
+  listModifiers.push({
+    name: 'Spell Weapon',
+    types: [
+      'explicit_inc_spell_dmg',
+      'explicit_inc_fire_spell_dmg',
+      'explicit_inc_cold_spell_dmg',
+      'explicit_inc_light_spell_dmg',
+      'explicit_add_fire_spell_dmg',
+      'explicit_add_cold_spell_dmg',
+      'explicit_add_light_spell_dmg',
+      'explicit_gain_extra_fire_damage',
+      'explicit_gain_extra_cold_damage',
+      'explicit_gain_extra_light_damage',
+      'explicit_level_all_spells',
+      'explicit_level_all_fire_spells',
+      'explicit_level_all_cold_spells',
+      'explicit_level_all_light_spells',
+      'explicit_level_all_physical_spells',
+      'explicit_level_all_chaos_spells',
+      'explicit_inc_cast_speed',
+      'explicit_global_crit_mult'
+    ],
+    prefix: 'explicit.stat_',
+  });
 
   // ---------- floating panel ----------
   const globalPanel = h(`
@@ -83,16 +136,8 @@ function startKroxScriptMainWorld() {
           <span class="finer-search-global-section-title">- Modifiers -</span>
           <div class="finer-search-global-toggle-collapsed dnArr"></div>
           <div class="finer-search-global-section-body hidden">
-            ${[
-              {name:'all res & life', type:'life,cold,fire,ligt'},
-              {name:'all resistances', type:'allR'},
-              {name:'life', type:'life'},
-              {name:'cold res', type:'cold'},
-              {name:'fire res', type:'fire'},
-              {name:'lightning res', type:'ligt'},
-              {name:'movement speed', type:'move'},
-            ].map(({name,type}) => `
-              <div class="finer-global-btn" data-type="${type}">
+            ${listModifiers.map(({name,types,prefix}) => `
+              <div class="finer-global-btn" data-type="${types.join(',')}" data-prefix="${prefix}">
                 <span class="finer-global-btn-pm mod-name">${name}</span>
                 <span class="finer-global-btn-pm minus" data-action="global-minus">-</span>
                 <span class="finer-global-btn-pm plus"  data-action="global-plus">+</span>
@@ -102,14 +147,14 @@ function startKroxScriptMainWorld() {
         </div>
         <div class="finer-search-global-section misc">
           <span class="finer-search-global-section-title">- Miscellaneous -</span>
-          <div class="finer-search-global-toggle-collapsed dnArr"></div>
           <div class="finer-search-global-section-body hidden">
             <div class="finer-global-btn" data-type="">
-              <span class="finer-global-btn-pm mod-name">set Buyout limit</span>
-              <span class="finer-global-btn-pm minus" data-action="currency-minus">-</span>
-              <span class="finer-global-btn-pm plus"  data-action="currency-plus">+</span>
             </div>
           </div>
+        </div>
+        <div class="finer-search-global-section about">
+          <span class="finer-search-global-section-title">- About -</span>
+          <a href="https://github.com/KroxiLabs/poe-trade-plus?tab=readme-ov-file#support" target="_blank" class="dnGo"></a>
         </div>
       </div>
     </div>`);
@@ -129,7 +174,49 @@ function startKroxScriptMainWorld() {
   let dragOff = null;
 
   // ---------- map & utilities you already had ----------
-  const modMap = { life:"total_life", cold:"total_cold_resistance", fire:"total_fire_resistance", ligt:"total_lightning_resistance", move:"increased_movement_speed", allR:"total_elemental_resistance" };
+  const modMap = {
+    life:"total_life",
+    cold:"total_cold_resistance",
+    fire:"total_fire_resistance",
+    light:"total_lightning_resistance",
+    chaos:"total_chaos_resistance",
+    move:"increased_movement_speed",
+    allR:"total_elemental_resistance",
+    explicit_life:"3299347043",
+    explicit_cold:"4220027924",
+    explicit_fire:"3372524247",
+    explicit_light:"1671376347",
+    explicit_chaos:"2923486259",
+    // Attack Damage
+    explicit_inc_phy_dmg:"1509134228",
+    explicit_add_phy_local:"1940865751",
+    explicit_add_fire_local:"709508406",
+    explicit_add_cold_local:"1037193709",
+    explicit_add_light_local:"3336890334",
+    explicit_add_chaos_local:"2223678961",
+    explicit_inc_attack_speed_local:"210067635",
+    explicit_inc_crit_chance:"2375316951",
+    explicit_global_crit_mult:"3556824919",
+    // Spell Damage
+    explicit_inc_spell_dmg:"2974417149",
+    explicit_inc_fire_spell_dmg:"3962278098",
+    explicit_inc_cold_spell_dmg:"3291658075",
+    explicit_inc_light_spell_dmg:"2231156303",
+    explicit_add_fire_spell_dmg:"1133016593",
+    explicit_add_cold_spell_dmg:"2469416729",
+    explicit_add_light_spell_dmg:"2831165374",
+    explicit_level_all_spells:"124131830",
+    explicit_level_all_fire_spells:"591105508",
+    explicit_level_all_cold_spells:"2254480358",
+    explicit_level_all_light_spells:"1545858329",
+    explicit_level_all_physical_spells:"4226189338",
+    explicit_level_all_chaos_spells:"2891184298",
+    explicit_inc_cast_speed:"737908626",
+    // Gains from POE2
+    explicit_gain_extra_fire_damage:"3015669065",
+    explicit_gain_extra_cold_damage:"2505884597",
+    explicit_gain_extra_light_damage:"3278136794",
+  };
   const createFilter = (id) => id && ({ id, value:{}, disabled:false });
 
   // NOTE: These finder helpers are brittle across Vue versions; consider replacing
@@ -237,13 +324,15 @@ function startKroxScriptMainWorld() {
   // ---------- your PoE-specific logic (adapted to vanilla) ----------
   function addPseudoMods(e, btn) {
     const more = btn.classList.contains('plus');
-    const hashes = (btn.closest('.finer-global-btn')?.dataset?.type || '').split(',').filter(Boolean);
+    const finer = btn.closest('.finer-global-btn');
+    const hashes = (finer?.dataset?.type || '').split(',').filter(Boolean);
+    const prefix = finer?.dataset?.prefix || 'pseudo.pseudo_';
 
     const ISG_AND = ItemSearchGroupsVueItems('and')?.find(g => g.index === 0);
     let reload = false;
 
     hashes.forEach((hash) => {
-      const reHashed = `pseudo.pseudo_${modMap[hash]}`;
+      const reHashed = `${prefix}${modMap[hash]}`;
       const current = ISG_AND?.filters?.find(f => f.id === reHashed);
       if (current) {
         const idx = ISG_AND.filters.indexOf(current);
@@ -260,7 +349,7 @@ function startKroxScriptMainWorld() {
 
     if (reload) {
       window.app.save(true);
-      document.querySelector('.btn.search-btn')?.click();
+      // document.querySelector('.btn.search-btn')?.click();
     }
   }
 
