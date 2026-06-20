@@ -2,6 +2,8 @@
 
 All-in-one extension to improve the Path of Exile 1 & 2 trade experience.
 
+This repo is no longer supported, we have a better, improved and up-to-date one! check it out: https://github.com/KroxiLabs/Kroxitrade 
+
 ## Features
 
 - **One-Click Mod Filtering**: Add and block modifiers with a single click directly from search results
